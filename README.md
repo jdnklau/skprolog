@@ -5,6 +5,14 @@ decision trees and random forests of
 [Scikit Learn](https://scikit-learn.org/stable/)
 into Prolog structures.
 
+## Project dependencies
+
+```bash
+python -m venv env  # Create virtual env
+source env/bin/activate  # activate virtual env
+pip install -r requirements.txt
+```
+
 ## Usage
 
 ```python
@@ -32,7 +40,6 @@ For `sklearn.ensemble.RandomForestClassifier` you can use
 By running
 
 ```bash
-source env/bin/activate
 python -m examples
 ```
 
