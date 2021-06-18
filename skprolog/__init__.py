@@ -70,3 +70,16 @@ def translate_nodes(tree, node=0):
         left = translate_tree(tree, node=tree_.children_left[node])
         right = translate_tree(tree, node=tree_.children_right[node])
         return f"split_node({str(int(feature))}, {threshold}, {left}, {right})"
+
+def translate_forest(forest):
+    """
+    Translates a trained sklearn.ensemble.RandomForestClassifier
+    into a Prolog structure.
+    """
+    estimators = forest.estimators_
+    trees = [translate_tree(t) for t in estimators]
+    trees = ", ".join(trees)
+
+    forestpl = f"random_forest({forest.n_features_}, {forest.n_classes_}, [{trees}])"
+
+    return forestpl
