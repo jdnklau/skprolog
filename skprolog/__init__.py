@@ -7,10 +7,10 @@ def translate_tree(tree, node=0):
     into a Prolog structure.
 
     The returned structure has the following form:
-        tree(N_features, N_classes, Nodes)
+        decision_tree(N_features, N_classes, Nodes)
 
-    Here, `n_features` is the number of features used, `n_classes` is the
-    number of output classes, and `nodes` is the structure of the tree.
+    Here, `N_features` is the number of features used, `N_classes` is the
+    number of output classes, and `Nodes` is the structure of the tree.
     Each node is encoded as follows:
         split_node(Feature, Threshold, Left_child, Right_child)
 
@@ -71,15 +71,24 @@ def translate_nodes(tree, node=0):
         right = translate_tree(tree, node=tree_.children_right[node])
         return f"split_node({str(int(feature))}, {threshold}, {left}, {right})"
 
+
 def translate_forest(forest):
     """
     Translates a trained sklearn.ensemble.RandomForestClassifier
     into a Prolog structure.
+
+    The returned structure has the following form:
+        random_forest(N_featurs, N_classes, N_trees, Trees)
+
+    Here, `N_features` is the number of features used, `N_classes` is the
+    number of output classes, and `N_trees` is the amount of trained trees.
+    `Trees` is a list of translated decision trees as produced by
+    skprolog.translate_tree.
     """
     estimators = forest.estimators_
     trees = [translate_tree(t) for t in estimators]
     trees = ", ".join(trees)
 
-    forestpl = f"random_forest({forest.n_features_}, {forest.n_classes_}, [{trees}])"
+    forestpl = f"random_forest({forest.n_features_}, {forest.n_classes_}, {len(estimators)}, [{trees}])"
 
     return forestpl
