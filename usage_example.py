@@ -1,3 +1,16 @@
+"""
+This file displays a more detailed usage example, targeted to Prolog
+programmers who want to employ decision trees or random forests for their
+projects or conduct a Prolog-based analysis over them.
+
+Notes:
+
+* The skprolog requirements do not include pandas. You need to install it
+  yourself: `python -m pip install pandas`
+* The code is an example for decision trees. For random forests you need to
+  import `from sklearn.ensemble import RandomForestClassifier` and use
+  `skprolog.translate_forest`.
+"""
 import skprolog
 
 import pandas as pd
