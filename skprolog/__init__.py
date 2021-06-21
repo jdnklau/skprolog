@@ -100,7 +100,6 @@ def translate_forest(forest):
     skprolog.translate_tree. `Feature_importances` is the importance
     ranking of each feature - these add up to 1, higher values correspond to
     higher importance.
-
     """
     estimators = forest.estimators_
     trees = ", ".join([translate_tree(t) for t in estimators])
