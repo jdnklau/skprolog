@@ -15,6 +15,11 @@ pip install -r requirements.txt
 
 ## Usage
 
+A basic usage example is given below.
+[`usage_example.py`](usage_example.py) is a more detailed version of it,
+especially useful if you are unfamiliar with the typical scikit-learn workflow
+but want to extract the Prolog structures, e.g. for a Prolog-based analysis.
+
 ```python
 import skprolog
 from sklearn.tree import DecisionTreeClassifier
