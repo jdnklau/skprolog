@@ -49,20 +49,21 @@ def write_example(file, data):
     forest = translate_forest(forest)
 
     with open(file, 'w+') as f:
-        f.write("# skprolog example\n\n")
-        f.write("## Decision Tree\n\n")
-        f.write(f"train acc: {tree_train_acc}\n")
-        f.write(f"test acc:  {tree_test_acc}\n")
+        f.write("% skprolog example\n\n")
+        f.write("%% Decision Tree\n\n")
+        f.write(f"td_train_acc({tree_train_acc}).\n")
+        f.write(f"td_test_acc({tree_test_acc}).\n")
         f.write(tree)
-        f.write("\n\n")
-        f.write("## Random Forest\n\n")
-        f.write(f"train acc: {forest_train_acc}\n")
-        f.write(f"test acc:  {forest_test_acc}\n")
+        f.write(".\n\n")
+        f.write("%% Random Forest\n\n")
+        f.write(f"rf_train_acc({forest_train_acc}).\n")
+        f.write(f"rf_test_acc({forest_test_acc}).\n")
         f.write(forest)
+        f.write(".\n")
 
 
 if __name__ == "__main__":
 
-    write_example("examples/iris.txt", datasets.load_iris())
-    write_example("examples/breast_cancer.txt", datasets.load_breast_cancer())
-    write_example("examples/cover_type.txt", datasets.fetch_covtype())
+    write_example("examples/iris.pl", datasets.load_iris())
+    write_example("examples/breast_cancer.pl", datasets.load_breast_cancer())
+    #write_example("examples/cover_type.pl", datasets.fetch_covtype()) # commented out as it takes very long
