@@ -7,11 +7,16 @@ def translate_tree(tree, node=0):
     into a Prolog structure.
 
     The returned structure has the following form:
-        decision_tree(N_features, N_classes, Nodes)
+
+        decision_tree(N_features, N_classes, Nodes, Feature_importances)
 
     Here, `N_features` is the number of features used, `N_classes` is the
-    number of output classes, and `Nodes` is the structure of the tree.
+    number of output classes, and `Feature_importances` is the importance
+    ranking of each feature - these add up to 1, higher values correspond to
+    higher importance.
+    `Nodes` is the structure of the tree.
     Each node is encoded as follows:
+
         split_node(Feature, Threshold, Left_child, Right_child)
 
     `Feature` gives the feature index of the input which is inspected,
@@ -21,22 +26,31 @@ def translate_tree(tree, node=0):
     `Left_child` and `Right_child` are either split nodes themselves or leaves.
 
     A leaf has the form
+
         leaf(Values)
 
-    `Values` is a list of lists of integers. Each sublist counts the amount of
+    where `Values` is a list of lists of integers.
+    Each sublist counts the amount of
     samples during the training that reached this node. For a multi class
     problem with 4 classes, this could like like
+
         Values = [[14, 9, 88, 13]]
 
     The final prediction is the index (class) with highest recorded value.
     """
 
     treepl = translate_nodes(tree, node)
+    importance_list = ", ".join([str(x) for x in tree.feature_importances_])
+    importance_list = "[" + importance_list + "]"
 
     if node == 0:
-        treepl = f"decision_tree({tree.n_features_}, {tree.n_classes_}, {treepl})"
+        treepl = (
+            f"decision_tree({tree.n_features_}, {tree.n_classes_}, "
+            f"{treepl}, {importance_list})"
+        )
 
     return treepl
+
 
 def translate_nodes(tree, node=0):
     tree_ = tree.tree_  # We want to access the internal structure for this
@@ -60,7 +74,7 @@ def translate_nodes(tree, node=0):
 
         # Convert to int first for removing ".0" in string output
         leaf = np.array2string(tree_.value[node].astype(int),
-                               separator=','
+                               separator=', '
                                )
         return f"leaf({leaf})"
     else:
@@ -78,17 +92,26 @@ def translate_forest(forest):
     into a Prolog structure.
 
     The returned structure has the following form:
-        random_forest(N_featurs, N_classes, N_trees, Trees)
+        random_forest(N_featurs, N_classes, N_trees, Trees, Feature_importances)
 
     Here, `N_features` is the number of features used, `N_classes` is the
     number of output classes, and `N_trees` is the amount of trained trees.
     `Trees` is a list of translated decision trees as produced by
-    skprolog.translate_tree.
+    skprolog.translate_tree. `Feature_importances` is the importance
+    ranking of each feature - these add up to 1, higher values correspond to
+    higher importance.
+
     """
     estimators = forest.estimators_
-    trees = [translate_tree(t) for t in estimators]
-    trees = ", ".join(trees)
+    trees = ", ".join([translate_tree(t) for t in estimators])
+    trees = "[" + trees + "]"
 
-    forestpl = f"random_forest({forest.n_features_}, {forest.n_classes_}, {len(estimators)}, [{trees}])"
+    importance_list = ", ".join([str(x) for x in forest.feature_importances_])
+    importance_list = "[" + importance_list + "]"
+
+    forestpl = (
+        f"random_forest({forest.n_features_}, {forest.n_classes_}, "
+        f"{len(estimators)}, {trees}, {importance_list})"
+    )
 
     return forestpl
