@@ -25,6 +25,7 @@ target_file = "example.pl"  # Where to store the prolog structure?
 
 # Prepare data
 data = pd.read_csv(csv_path)
+# data = pd.get_dummies(data) # comment in to obtain One Hot encodings
 X = data.drop([target_column], axis=1)
 y = data[target_column]
 X_train, X_test, y_train, y_test = train_test_split(X, y,
